@@ -28,5 +28,5 @@ if uploaded_file is not None:
     label = "TBC" if prediction[0][0] > 0.5 else "Normal"
 
     # Output
-    st.image(img, caption=f"Hasil Prediksi: {label}", use_column_width=True)
+    st.image(img, caption=f"Hasil Prediksi: {label}", use_container_width=True)
     st.success(f"✅ Prediksi Model: **{label}**")
