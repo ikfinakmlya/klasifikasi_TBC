@@ -23,10 +23,23 @@ if uploaded_file is not None:
     img_array = image.img_to_array(img)
     img_array = np.expand_dims(img_array, axis=0) / 255.0
 
-    # Prediksi
     prediction = model.predict(img_array)
-    label = "TBC" if prediction[0][0] > 0.5 else "Normal"
+    prob = float(prediction[0][0])  # prob utk kelas index=1 (tuber)
 
-    # Output
+    confidence = max(prob, 1-prob)  # ambil confidence
+    if prob > 0.5:
+        label = "TBC"
+    else:
+        label = "Normal"
+
     st.image(img, caption=f"Hasil Prediksi: {label}", use_container_width=True)
-    st.success(f"✅ Prediksi Model: **{label}**")
+    st.write(f"Probabilitas TBC: {prob:.3f}")
+    st.write(f"Confidence: {confidence:.3f}")
+
+    if confidence < 0.75:
+        st.warning("⚠️ Model tidak yakin. Mungkin gambar bukan chest X-ray atau kualitas data rendah.")
+    else:
+        if label == "TBC":
+            st.success("✅ Prediksi Model: **TBC**")
+        else:
+            st.success("✅ Prediksi Model: **Normal (non-TBC)**")
